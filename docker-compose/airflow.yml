@@ -1,3 +1,18 @@
+x-airflow-common:
+    &airflow-common
+    image: my-custom-airflow:${AIRFLOW_VERSION:-2.10.3}
+    build:
+        context: ../docker
+        dockerfile: Dockerfile
+        args:
+            AIRFLOW_VERSION: ${AIRFLOW_VERSION:-2.10.3}
+    depends_on:
+        &airflow-common-depends-on
+        airflow-metadata:
+            condition: service_healthy
+        airflow-init:
+            condition: service_completed_successfully
+
 version: '3.8'
 services:
     airflow-metadata:
@@ -13,13 +28,9 @@ services:
             interval: 5s
             retries: 5
         restart: always
+
     airflow-scheduler:
-        image: my-custom-airflow:${AIRFLOW_VERSION:-2.4.1}
-        build:
-            context: ../docker
-            dockerfile: Dockerfile
-            args:
-                AIRFLOW_VERSION: ${AIRFLOW_VERSION:-2.4.1}
+        <<: *airflow-common
         command: scheduler
         healthcheck:
             test: [ "CMD-SHELL", 'airflow jobs check --job-type SchedulerJob --hostname "$${HOSTNAME}"' ]
@@ -29,22 +40,15 @@ services:
         restart: always
         user: "${AIRFLOW_UID:-50000}:0"
         depends_on:
-            airflow-metadata:
-                condition: service_healthy
-            airflow-init:
-                condition: service_completed_successfully
+            <<: *airflow-common-depends-on
         env_file:
             - airflow/airflow.env
         volumes:
             - ../dags:/opt/airflow/dags
             - ../logs:/opt/airflow/logs
+
     airflow-webserver:
-        image: my-custom-airflow:${AIRFLOW_VERSION:-2.4.1}
-        build:
-            context: ../docker
-            dockerfile: Dockerfile
-            args:
-                AIRFLOW_VERSION: ${AIRFLOW_VERSION:-2.4.1}
+        <<: *airflow-common
         command: webserver
         healthcheck:
             test: [ "CMD", "curl", "--fail", "http://localhost:8080/health" ]
@@ -54,10 +58,7 @@ services:
         restart: always
         user: "${AIRFLOW_UID:-50000}:0"
         depends_on:
-            airflow-metadata:
-                condition: service_healthy
-            airflow-init:
-                condition: service_completed_successfully
+            <<: *airflow-common-depends-on
         env_file:
             - airflow/airflow.env
         volumes:
@@ -65,13 +66,9 @@ services:
             - ../logs:/opt/airflow/logs
         ports:
             - "8080:8080"
+
     airflow-init:
-        image: my-custom-airflow:${AIRFLOW_VERSION:-2.4.1}
-        build:
-            context: ../docker
-            dockerfile: Dockerfile
-            args:
-                AIRFLOW_VERSION: ${AIRFLOW_VERSION:-2.4.1}
+        <<: *airflow-common
         entrypoint: /opt/airflow/scripts/entrypoint.sh
         user: "${AIRFLOW_UID:-50000}:0"
         depends_on:
