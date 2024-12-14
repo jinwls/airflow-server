@@ -1,3 +1,4 @@
+# 공통 Airflow 서비스 설정
 x-airflow-common:
     &airflow-common
     image: my-custom-airflow:${AIRFLOW_VERSION:-2.10.3}
@@ -9,9 +10,9 @@ x-airflow-common:
     depends_on:
         &airflow-common-depends-on
         airflow-metadata:
-            condition: service_healthy
+            condition: service_healthy # 메타데이터 DB가 정상 상태인지 확인
         airflow-init:
-            condition: service_completed_successfully
+            condition: service_completed_successfully # airflow-init 서비스가 성공적으로 완료되었는지 확인
 
 version: '3.8'
 services:
@@ -86,4 +87,4 @@ services:
         volumes:
             - ./airflow/scripts:/opt/airflow/scripts
 volumes:
-  airflow-db-data: {}
+  airflow-db-data: {} # 기본 설정: /var/lib/docker/volumes/

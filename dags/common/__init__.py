@@ -1,1 +1,1 @@
-"""This module provides reusable functions and classes"""
+# 공통 함수 모듈: 프로젝트 전반에서 재사용 가능한 공통 유틸리티와 헬퍼 함수들을 제공

@@ -4,35 +4,37 @@ from .utils import docker_compose_command
 
 
 @task
-def up_airflow(ctx, version=1, build=False, extra_services=None):
+def up_airflow(ctx, build=False):
+    """`docker-compose up -d` 명령 실행 태스크"""
     services = [
         "airflow-metadata",
         "airflow-scheduler",
         "airflow-webserver",
         "airflow-init",
     ]
-    if extra_services is not None:
-        services += extra_services
     docker_compose_command(
-        ctx, f"up -d {'--build' if build else ''} {' '.join(services)}", version=version
+        ctx, f"up -d {'--build' if build else ''} {' '.join(services)}"
     )
 
 
 @task
-def down(ctx, volumes=False, version=1):
+def down(ctx, volumes=False):
+    """`docker-compose down` 명령 실행 태스크"""
     docker_compose_command(
-        ctx, f"down {'--volumes' if volumes else ''}", version=version
+        ctx, f"down {'--volumes' if volumes else ''}"
     )
 
 
 @task
-def stop(ctx, version=1):
-    docker_compose_command(ctx, f"stop", version=version)
+def stop(ctx):
+    """`docker-compose` stop 명령 실행 태스크"""
+    docker_compose_command(ctx, f"stop")
 
 
 @task
-def command(ctx, cmd, version=1):
-    docker_compose_command(ctx, cmd, version=version)
+def command(ctx, cmd):
+    """사용자 지정 명령 실행 태스크"""
+    docker_compose_command(ctx, cmd)
 
 
 docker_compose_collection = Collection()
