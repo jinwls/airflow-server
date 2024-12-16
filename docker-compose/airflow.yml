@@ -18,6 +18,8 @@ version: '3.8'
 services:
     airflow-metadata:
         image: postgres:13
+        ports:
+            - "5433:5432"
         environment:
             POSTGRES_USER: airflow
             POSTGRES_PASSWORD: airflow
@@ -78,12 +80,12 @@ services:
         env_file:
             - airflow/airflow.env
         environment:
-            _AIRFLOW_WWW_USER_USERNAME: airflow_user
+            _AIRFLOW_WWW_USER_USERNAME: airflow
             _AIRFLOW_WWW_USER_FIRSTNAME: Airflow
             _AIRFLOW_WWW_USER_LASTNAME: Admin
             _AIRFLOW_WWW_USER_EMAIL: airflowadmin@example.com
             _AIRFLOW_WWW_USER_ROLE: Admin
-            _AIRFLOW_WWW_USER_PASSWORD: airflow_password
+            _AIRFLOW_WWW_USER_PASSWORD: airflow
         volumes:
             - ./airflow/scripts:/opt/airflow/scripts
 volumes:

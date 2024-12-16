@@ -1,66 +1,45 @@
 # Airflow server
 
-This project contains a [docker-compose](https://docs.docker.com/compose/) file, and some docker configurations to
-deploy an airflow server with local executor for testing/development.
+이 프로젝트는 Airflow 로컬 개발/테스트 환경을 구축하기 위한 프로젝트로 아래 절차를 따라 주세요.
 
 ## Requirements
 - [python](https://www.python.org/downloads/) 3.8+
-- [docker](https://docs.docker.com/engine/install/) and [docker compose](https://docs.docker.com/compose/install/)
-- install the python requirements:
+- [docker desktop](https://docs.docker.com/get-started/get-docker/) and [docker compose](https://docs.docker.com/compose/install/)
+- Python 패키지 설치:
     ```shell
     pip install -r requirements.txt
     ```
 
 ### Development
-To contribute to this project, you need to activate the pre-commit in order to apply the linters on each new commit:
+코드 커밋 시 정해진 linter 규칙을 적용하려면, 아래 명령어로 pre-commit을 활성화하세요:
 ```shell
 pre-commit install
 ```
 
-## Customize your airflow docker image
-
-To install your python packages and use them in the dags, you can add them to the
-[requirements.txt](docker/requirements.txt) file, and you can update the [Dockerfile](docker/Dockerfile)
-as you need.
-
-## Airflow webserver credentials
-
-In this project version, we configure the airflow webserver credentials in the
-[airflow docker compose file](docker-compose/airflow.yml) which we provide as environment variables for the  which you can
-update it to add your user infos.
-```dotenv
-_AIRFLOW_WWW_USER_USERNAME: airflow_user
-_AIRFLOW_WWW_USER_FIRSTNAME: Airflow
-_AIRFLOW_WWW_USER_LASTNAME: Admin
-_AIRFLOW_WWW_USER_EMAIL: airflowadmin@example.com
-_AIRFLOW_WWW_USER_ROLE: Admin
-_AIRFLOW_WWW_USER_PASSWORD: airflow_password
-```
-
-## Deploy the airflow server
-Before deploying the server, make sure you have the folders dags, db, logs, and scripts which are attached to some
-docker services.
+## Airflow Server Deploy
+Docker Desktop을 실행한 후, 아래 명령어로 Airflow 서버를 로컬 환경에 배포합니다:
 ```shell
-# choose your airflow version
-export AIRFLOW_VERSION=2.4.1
-invoke compose.up-airflow --build
+# Default Airflow version: 2.10.3
+invoke compose.up --build
 ```
-Finally, in the browser, open `http://localhost:8080` and put the username and password you used in
-[this step](#airflow-webserver-credentials) and click on login.
+서버가 정상적으로 실행되면, 웹 브라우저에서(`http://localhost:8080`)에 접속하고, 기본 계정 정보를 통해 로그인하세요.
+- Username: airflow
+- Password: airflow
 
-## Stop the airflow server
-To stop the server, you have multiple option:
-- Stop the containers without deleting them:
+
+## Airflow Server Stop
+서버 사용이 끝난 후, 다음 명령어를 사용해 컨테이너를 관리하세요:
+- 컨테이너 일시 정지:
     ```shell
     invoke compose.stop
     ```
-- Delete the containers:
+- 컨테이너 삭제:
     ```shell
     invoke compose.down
     ```
-- Delete the containers and the volumes:
+- 컨테이너 및 볼륨 삭제:
     ```shell
     invoke compose.down --volumes
     ```
 
-Originally from @hussein-awala via https://github.com/hussein-awala/airflow-server
+원작자 @hussein-awala via https://github.com/hussein-awala/airflow-server
