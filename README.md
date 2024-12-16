@@ -62,3 +62,5 @@ To stop the server, you have multiple option:
     ```shell
     invoke compose.down --volumes
     ```
+
+Originally from @hussein-awala via https://github.com/hussein-awala/airflow-server
