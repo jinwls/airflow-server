@@ -38,7 +38,7 @@ def command(ctx, cmd):
 
 
 docker_compose_collection = Collection()
-docker_compose_collection.add_task(up_airflow, name="up_airflow")
+docker_compose_collection.add_task(up_airflow, name="up")
 docker_compose_collection.add_task(down, name="down")
 docker_compose_collection.add_task(stop, name="stop")
 docker_compose_collection.add_task(command, name="cmd")
